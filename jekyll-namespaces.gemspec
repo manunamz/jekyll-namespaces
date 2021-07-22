@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/jekyll/namespaces/version"
+require_relative "lib/jekyll-namespaces/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-namespaces"
-  spec.version       = Jekyll::Namespaces::VERSION
+  spec.version       = JekyllNamespaces::VERSION
   spec.authors       = ["manunamz"]
   spec.email         = ["manunamz@pm.me"]
 

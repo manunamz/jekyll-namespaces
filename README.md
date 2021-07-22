@@ -1,28 +1,33 @@
-# Jekyll::Namespaces
+# Jekyll-Namespaces
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jekyll/namespaces`. To experiment with that code, run `bin/console` for an interactive prompt.
+⚠️ This is gem is under active development! ⚠️ 
 
-TODO: Delete this and the text above, and describe your gem
+⚠️ Expect breaking changes and surprises until otherwise noted (likely by v0.1.0 or v1.0.0). ⚠️
 
 ## Installation
 
-Add this line to your application's Gemfile:
+1. Add `gem 'jekyll-namespaces'` to your site's Gemfile and run `bundle`.
+2. You may edit `_config.yml` to toggle the plugin and graph generation on/off or exclude certain jekyll types. (jekyll types: `pages`, `posts`, and `collections`. [Here](https://ben.balter.com/2015/02/20/jekyll-collections/) is a blog post about them.)
 
-```ruby
-gem 'jekyll-namespaces'
+Defaults look like this:
+
+```
+namespaces:
+  enable: true
+  exclude: []
+d3_graph_data:
+  enabled: true
+  exclude: []
+  assets_rel_path: "/assets"
 ```
 
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install jekyll-namespaces
+The `enable` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `exclude`s for either wikilinks or graph generation.
 
 ## Usage
 
-TODO: Write usage instructions here
+Namespaces are dilineated by dots, `like.this.md`.
+
+Missing levels will be processed and !?marked?! as missing.
 
 ## Development
 
@@ -32,4 +37,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/jekyll-namespaces.
+Bug reports and pull requests are welcome on GitHub at https://github.com/manunamz/jekyll-namespaces.
