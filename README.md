@@ -35,6 +35,10 @@ namespaces:
 
 Namespaces are dilineated by dots, `like.this.md`.
 
+Metadata is added to frontmatter of processed documents:
+  - `ancestors`: An ("ordered") array of ancestor documents of the current doc.
+  - `children`: The child documents of the current doc (only goes one level deep -- e.g. there are no grandchildren).
+
 Missing levels will not break the build. They will be processed and marked as missing.
 
 ## Development
