@@ -21,7 +21,15 @@ d3_graph_data:
   path: "/assets"
 ```
 
-The `enable` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `exclude`s for either wikilinks or graph generation.
+The `enable` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `include`s for namespaces or `exclude`s for graph generation.
+
+The gem will only scan the jekyll types listed under the `include` config:
+
+```
+namespaces:
+  include:
+    - "docs"
+```
 
 ## Usage
 
