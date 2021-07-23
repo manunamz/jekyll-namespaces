@@ -21,18 +21,14 @@ RSpec.describe(JekyllNamespaces::Generator) do
         "source"               => fixtures_dir,
         "destination"          => site_dir,
         "url"                  => "garden.testsite.com",
-        # "testing"              => true,
+        "testing"              => true,
         # "baseurl"              => "",
       )
     )
   end
   # let(:config_overrides)     { {} }
-  let(:config_overrides)     { { "namespaces" => { "exclude" => ["pages", "posts"] } } }
+  let(:config_overrides)     { { "namespaces" => { "include" => ["docs"] } } }
   let(:site)                 { Jekyll::Site.new(config) }
-  
-  let(:doc_root)             { find_by_title(site.collections["docs"].docs, "Root") }
-  let(:doc_second_lvl)       { find_by_title(site.collections["docs"].docs, "Root Second Level") }
-  let(:doc_missing_lvl)      { find_by_title(site.collections["docs"].docs, "Missing Level") }
 
   # makes markdown tests work
   subject                    { described_class.new(site.config) }

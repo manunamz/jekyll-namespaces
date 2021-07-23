@@ -32,6 +32,36 @@ RSpec.configure do |config|
     docs.find { |d| d.data["title"] == title }
   end
 
+  def find_generated_file(relative_path)
+    fixtures_dir(relative_path)
+  end
+
+  def find_static_file(relative_path)
+    site.static_files.find { |sf| sf.relative_path == relative_path }
+  end
+
+  def static_graph_file_content()
+    graph_file = File.read(site_dir("/assets/graph-tree.json"))
+    JSON.parse(graph_file)
+  end
+
+  # TODO: write better graph data getters
+
+  def get_graph_root()
+    graph_file = File.read(site_dir("/assets/graph-tree.json"))
+    JSON.parse(graph_file) # "Root Level" (which includes all the children)
+  end
+
+  def get_graph_node()
+    graph_file = File.read(site_dir("/assets/graph-tree.json"))
+    JSON.parse(graph_file)["children"].find { |n| n["label"] == "Root Second Level" } # "Root Second Level"
+  end
+
+  def get_missing_graph_node()
+    graph_file = File.read(site_dir("/assets/graph-tree.json"))
+    JSON.parse(graph_file)["children"].find { |n| n["id"] == "" } # "Blank"
+  end
+
   # comments from: https://github.com/jekyll/jekyll-mentions/blob/master/spec/spec_helper.rb
 
   # rspec-mocks config goes here. You can use an alternate test double

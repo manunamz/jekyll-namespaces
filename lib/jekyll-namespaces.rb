@@ -16,15 +16,16 @@ module JekyllNamespaces
     # config
     CONFIG_KEY = "namespaces"
     ENABLED_KEY = "enabled"
-    EXCLUDE_KEY = "exclude"
+    INCLUDE_KEY = "include"
     # graph config
     GRAPH_DATA_KEY = "d3_graph_data"
     ENABLED_GRAPH_DATA_KEY = "enabled"
     EXCLUDE_GRAPH_KEY = "exclude"
-    GRAPH_ASSETS_LOCATION_KEY = "assets_rel_path"
+    GRAPH_ASSETS_LOCATION_KEY = "path"
 
     def initialize(config)
       @config ||= config
+      @testing ||= config['testing'] if config.keys.include?('testing')
     end
 
     def generate(site)
@@ -36,14 +37,13 @@ module JekyllNamespaces
 
       # setup markdown docs
       docs = []
-      docs += site.pages if !exclude?(:pages)
-      docs += site.docs_to_write.filter { |d| !exclude?(d.type) }
+      docs += site.pages if include?(:pages)
+      docs += site.docs_to_write.filter { |d| include?(d.type) }
       @md_docs = docs.filter {|doc| markdown_extension?(doc.extname) }
       
       # setup tree
       root_doc = @md_docs.detect {|doc| doc.data['slug'] == 'root' }
       root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc)
-
       # build tree
       @md_docs.each do |cur_doc|
         # add path to tree
@@ -57,6 +57,7 @@ module JekyllNamespaces
       # generate tree metadata
       @md_docs.each do |cur_doc|
         if !excluded_in_graph?(cur_doc)
+          # TODO: cur_doc.data['namespace'] = cur_doc.basename_without_ext
           cur_doc.data['namespace'] = cur_doc.basename[0...-3]
           cur_doc.data['ancestors'], cur_doc.data['children'] = self.find_doc_immediate_relatives(cur_doc, root)
         end
@@ -73,9 +74,9 @@ module JekyllNamespaces
       option(ENABLED_KEY) == false
     end
 
-    def exclude?(type)
-      return false unless option(EXCLUDE_KEY)
-      return option(EXCLUDE_KEY).include?(type.to_s)
+    def include?(type)
+      return false unless option(INCLUDE_KEY)
+      return option(INCLUDE_KEY).include?(type.to_s)
     end
 
     def markdown_extension?(extension)
@@ -97,8 +98,8 @@ module JekyllNamespaces
     end
 
     def excluded_in_graph?(type)
-      return false unless option_graph(EXCLUDE_KEY)
-      return option_graph(EXCLUDE_KEY).include?(type.to_s)
+      return false unless option_graph(EXCLUDE_GRAPH_KEY)
+      return option_graph(EXCLUDE_GRAPH_KEY).include?(type.to_s)
     end
 
     def has_custom_assets_path?
@@ -206,7 +207,8 @@ module JekyllNamespaces
         json_children.append(new_child)
       end
       json_node = {
-        "id": node.id,
+        # "id": node.id,
+        "id": node_url,
         "namespace": node.namespace,
         "label": label,
         "children": json_children,
@@ -226,6 +228,11 @@ module JekyllNamespaces
       File.write(@site.source + static_file.relative_path, JSON.dump(
         json_formatted_tree
       ))
+      # tests fail without manually adding the static file, but actual site builds seem to do ok
+      # ...although there does seem to be a race condition which causes a rebuild to be necessary in order to detect the graph data file
+      if @testing
+        @site.static_files << static_file if !@site.static_files.include?(static_file)
+      end
     end
   end
 end
