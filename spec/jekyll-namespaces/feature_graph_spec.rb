@@ -88,14 +88,14 @@ RSpec.describe(JekyllNamespaces::Generator) do
 
     context "default behavior" do
 
-      context "when tree.path levels exists" do
+      it "generates graph data" do
+        expect(graph_generated_fpath).to eq(File.join(fixtures_dir, "/assets/graph-tree.json"))
+        expect(graph_static_file).to be_a(Jekyll::StaticFile)
+        expect(graph_static_file.relative_path).not_to be(nil)
+        expect(graph_data.class).to be(Hash)
+      end
 
-        it "generates graph data" do
-          expect(graph_generated_fpath).to eq(File.join(fixtures_dir, "/assets/graph-tree.json"))
-          expect(graph_static_file).to be_a(Jekyll::StaticFile)
-          expect(graph_static_file.relative_path).not_to be(nil)
-          expect(graph_data.class).to be(Hash)
-        end
+      context "when tree.path levels exists" do
 
         context "root node" do
 
