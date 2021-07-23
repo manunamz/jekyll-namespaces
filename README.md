@@ -27,7 +27,7 @@ The `enable` flags may be toggled to turn off the plugin or turn off `d3_graph_d
 
 Namespaces are dilineated by dots, `like.this.md`.
 
-Missing levels will be processed and !?marked?! as missing.
+Missing levels will not break the build. They will be processed and marked as missing.
 
 ## Development
 
