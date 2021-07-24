@@ -33,6 +33,8 @@ namespaces:
 
 ## Usage
 
+⚠️ Currently, a [`root.md`](https://wiki.dendron.so/notes/f3a41725-c5e5-4851-a6ed-5f541054d409.html#root) file is expected to setup the hierarchy.
+
 Namespaces are dilineated by dots, `like.this.md`.
 
 Metadata is added to frontmatter of processed documents:
