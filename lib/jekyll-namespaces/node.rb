@@ -5,7 +5,7 @@ class Node
   attr_accessor :id, :namespace, :title, :children, :doc
 
   def initialize(id, namespace, title, doc)
-    @id = id
+    @id = id.to_s
     @children = []
     @namespace = namespace
     @title = title

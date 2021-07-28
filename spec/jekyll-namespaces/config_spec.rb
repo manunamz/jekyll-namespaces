@@ -3,15 +3,15 @@
 require "jekyll-namespaces"
 require "spec_helper"
 
-RSpec.describe(JekyllNamespaces) do
+RSpec.describe(Jekyll::Namespaces) do
 
   it "has a version number" do
-    expect(JekyllNamespaces::VERSION).not_to be nil
+    expect(Jekyll::Namespaces::VERSION).not_to be nil
   end
 
 end
 
-RSpec.describe(JekyllNamespaces::Generator) do
+RSpec.describe(Jekyll::Namespaces::Generator) do
   let(:config) do
     Jekyll.configuration(
       config_overrides.merge(

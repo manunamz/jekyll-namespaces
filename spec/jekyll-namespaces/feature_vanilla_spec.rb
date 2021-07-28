@@ -3,7 +3,7 @@
 require "jekyll-namespaces"
 require "spec_helper"
 
-RSpec.describe(JekyllNamespaces::Generator) do
+RSpec.describe(Jekyll::Namespaces::Generator) do
   let(:config) do
     Jekyll.configuration(
       config_overrides.merge(

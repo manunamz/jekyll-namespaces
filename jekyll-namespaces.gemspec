@@ -4,7 +4,7 @@ require_relative "lib/jekyll-namespaces/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-namespaces"
-  spec.version       = JekyllNamespaces::VERSION
+  spec.version       = Jekyll::Namespaces::VERSION
   spec.authors       = ["manunamz"]
   spec.email         = ["manunamz@pm.me"]
 
