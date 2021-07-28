@@ -58,8 +58,7 @@ module Jekyll
         # generate tree metadata
         @md_docs.each do |cur_doc|
           if !excluded_in_graph?(cur_doc)
-            # TODO: cur_doc.data['namespace'] = cur_doc.basename_without_ext
-            cur_doc.data['namespace'] = cur_doc.basename[0...-3]
+            cur_doc.data['namespace'] = cur_doc.basename_without_ext
             cur_doc.data['ancestors'], cur_doc.data['children'] = self.find_doc_immediate_relatives(cur_doc, root)
           end
         end
