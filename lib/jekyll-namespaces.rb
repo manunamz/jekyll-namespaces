@@ -43,12 +43,13 @@ module Jekyll
         docs += site.docs_to_write.filter { |d| include?(d.type) }
         @md_docs = docs.filter { |doc| markdown_extension?(doc.extname) }
 
-        # setup tree
+        # tree
+        ## setup
         root_doc = @md_docs.detect { |doc| doc.data['slug'] == 'root' }
-        root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc.data['url'], root_doc)
-        # build tree
+        root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc.data['permalink'], root_doc)
+        ## build
         @md_docs.each do |cur_doc|
-          # add path to tree
+          ## add path
           if !cur_doc.data['slug'].nil? and cur_doc.data['slug'] != 'root'
             self.add_path(root, cur_doc)
           end
@@ -121,7 +122,7 @@ module Jekyll
           cur_nd_namespace = 'root' + '.' + doc.data['slug']
           cur_nd_id = doc.data['id']
           cur_nd_title = doc.data['title']
-          cur_nd_url = doc.data['url']
+          cur_nd_url = doc.data['permalink']
           # create node if one does not exist
           unless node.children.any?{ |c| c.namespace == cur_nd_namespace }
             new_node = Node.new(cur_nd_id, cur_nd_namespace, cur_nd_title, cur_nd_url, doc)
@@ -131,6 +132,7 @@ module Jekyll
             cur_node = node.children.detect {|c| c.namespace == cur_nd_namespace }
             cur_node.id = cur_nd_id
             cur_node.title = cur_nd_title
+            cur_node.url = cur_nd_url
             cur_node.doc = doc
           end
           return
@@ -150,10 +152,10 @@ module Jekyll
       # find the parent and children of the 'target_doc'.
       # ('node' as in the current node, which first is root.)
       def find_doc_immediate_relatives(target_doc, node, ancestors=[])
-        if target_doc.data['id'] == node.id
+        if target_doc == node.doc
           children = []
           node.children.each do |child|
-            if child.url == ''
+            if !child.doc.is_a?(Jekyll::Document)
               children << { 
                 'url' => '',
                 'title' => child.namespace.match('([^.]*$)')[0].gsub('-', ' ')
@@ -164,7 +166,7 @@ module Jekyll
           end
           return ancestors, children
         else
-          if node.url == ''
+          if !node.doc.is_a?(Jekyll::Document)
             ancestors << { 
               'url' => '',
               'title' => node.namespace.match('([^.]*$)')[0].gsub('-', ' ')
@@ -195,7 +197,7 @@ module Jekyll
 
       # convert tree (node-class) to json
       def tree_to_json(baseurl, node, json_node={})
-        if node.id.empty?
+        if !node.doc.is_a?(Jekyll::Document)
           Jekyll.logger.warn "Tree node missing: ", node.namespace
           label = node.namespace.match('([^.]*$)')[0].gsub('-', ' ')
           node_url = ''
