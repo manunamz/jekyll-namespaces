@@ -46,7 +46,7 @@ module Jekyll
         # tree
         ## setup
         root_doc = @md_docs.detect { |doc| doc.data['slug'] == 'root' }
-        root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc.data['permalink'], root_doc)
+        root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.data['permalink'], root_doc)
         ## build
         @md_docs.each do |cur_doc|
           ## add path
@@ -125,22 +125,19 @@ module Jekyll
           cur_nd_url = doc.data['permalink']
           # create node if one does not exist
           unless node.children.any?{ |c| c.namespace == cur_nd_namespace }
-            new_node = Node.new(cur_nd_id, cur_nd_namespace, cur_nd_title, cur_nd_url, doc)
+            new_node = Node.new(cur_nd_namespace, cur_nd_id, cur_nd_title, cur_nd_url, doc)
             node.children << new_node
           # fill-in node if one already exists
           else
             cur_node = node.children.detect {|c| c.namespace == cur_nd_namespace }
-            cur_node.id = cur_nd_id
-            cur_node.title = cur_nd_title
-            cur_node.url = cur_nd_url
-            cur_node.doc = doc
+            cur_node.fill(cur_nd_id, cur_nd_title, cur_nd_url, doc)
           end
           return
         # create temp node and recurse
         else
           cur_namespace = 'root' + '.' + chunked_namespace[0..(depth - 1)].join('.')
           unless node.children.any?{ |c| c.namespace == cur_namespace }
-            new_node = Node.new('', cur_namespace, '', '', '')
+            new_node = Node.new(cur_namespace)
             node.children << new_node
           else
             new_node = node.children.detect {|c| c.namespace == cur_namespace }
