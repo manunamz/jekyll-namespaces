@@ -7,6 +7,7 @@ require_relative "jekyll-namespaces/version"
 
 module Jekyll
   module Namespaces
+
     class Generator < Jekyll::Generator
       attr_accessor :site, :config
 
@@ -40,11 +41,11 @@ module Jekyll
         docs = []
         docs += site.pages if include?(:pages)
         docs += site.docs_to_write.filter { |d| include?(d.type) }
-        @md_docs = docs.filter {|doc| markdown_extension?(doc.extname) }
+        @md_docs = docs.filter { |doc| markdown_extension?(doc.extname) }
 
         # setup tree
         root_doc = @md_docs.detect { |doc| doc.data['slug'] == 'root' }
-        root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc)
+        root = Node.new(root_doc.data['id'], 'root', root_doc.data['title'], root_doc.data['url'], root_doc)
         # build tree
         @md_docs.each do |cur_doc|
           # add path to tree
@@ -120,9 +121,10 @@ module Jekyll
           cur_nd_namespace = 'root' + '.' + doc.data['slug']
           cur_nd_id = doc.data['id']
           cur_nd_title = doc.data['title']
+          cur_nd_url = doc.data['url']
           # create node if one does not exist
           unless node.children.any?{ |c| c.namespace == cur_nd_namespace }
-            new_node = Node.new(cur_nd_id, cur_nd_namespace, cur_nd_title, doc)
+            new_node = Node.new(cur_nd_id, cur_nd_namespace, cur_nd_title, cur_nd_url, doc)
             node.children << new_node
           # fill-in node if one already exists
           else
@@ -136,7 +138,7 @@ module Jekyll
         else
           cur_namespace = 'root' + '.' + chunked_namespace[0..(depth - 1)].join('.')
           unless node.children.any?{ |c| c.namespace == cur_namespace }
-            new_node = Node.new('', cur_namespace, '', '')
+            new_node = Node.new('', cur_namespace, '', '', '')
             node.children << new_node
           else
             new_node = node.children.detect {|c| c.namespace == cur_namespace }
@@ -151,9 +153,9 @@ module Jekyll
         if target_doc.data['id'] == node.id
           children = []
           node.children.each do |child|
-            if child.id == ''
+            if child.url == ''
               children << { 
-                'id' => '',
+                'url' => '',
                 'title' => child.namespace.match('([^.]*$)')[0].gsub('-', ' ')
               }
             else
@@ -162,9 +164,9 @@ module Jekyll
           end
           return ancestors, children
         else
-          if node.id == ''
+          if node.url == ''
             ancestors << { 
-              'id' => '',
+              'url' => '',
               'title' => node.namespace.match('([^.]*$)')[0].gsub('-', ' ')
             }
           else
@@ -235,5 +237,6 @@ module Jekyll
         end
       end
     end
+
   end
 end

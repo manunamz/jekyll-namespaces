@@ -42,41 +42,45 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end
 
-  context "default tree.path processing" do
+  context "basic tree.path processing" do
 
-    it "root-lvl 'ancestors' and 'children' metadata will be populated" do
-      expect(doc_root.data['ancestors'].size).to eq(0)
-      expect(doc_root.data['children'].size).to eq(2)
-      expect(doc_root.data['children']).to include(doc_second_lvl)
-      expect(doc_root.data['children']).to include({ "id" => "", "title" => "blank" })
+    context "when tree.path exists" do
+
+      it "root-lvl 'ancestors' and 'children' metadata will be populated" do
+        expect(doc_root.data['ancestors'].size).to eq(0)
+        expect(doc_root.data['children'].size).to eq(2)
+        expect(doc_root.data['children']).to include(doc_second_lvl)
+        expect(doc_root.data['children']).to include({ "url" => "", "title" => "blank" })
+      end
+
+      it "second-lvl 'ancestors' and 'children' metadata will be populated" do
+        expect(doc_second_lvl.data['ancestors'].size).to eq(1)
+        expect(doc_second_lvl.data['ancestors']).to include(doc_root)
+        expect(doc_second_lvl.data['children'].size).to eq(1)
+        expect(doc_second_lvl.data['children']).to include(doc_third_lvl)
+      end
+
+      it "third-lvl 'ancestors' and 'children' metadata will be populated" do
+        expect(doc_third_lvl.data['ancestors'].size).to eq(2)
+        expect(doc_third_lvl.data['ancestors']).to include(doc_root)
+        expect(doc_third_lvl.data['ancestors']).to include(doc_second_lvl)
+        expect(doc_third_lvl.data['children'].size).to eq(0)
+      end
+
     end
 
-    it "second-lvl 'ancestors' and 'children' metadata will be populated" do
-      expect(doc_second_lvl.data['ancestors'].size).to eq(1)
-      expect(doc_second_lvl.data['ancestors']).to include(doc_root)
-      expect(doc_second_lvl.data['children'].size).to eq(1)
-      expect(doc_second_lvl.data['children']).to include(doc_third_lvl)
+    context "when tree.path level does not exist" do
+
+      it "parent of missing level inserts placeholders in 'children' for missing levels" do
+        expect(doc_root.data['children']).to include({ "url" => "", "title" => "blank" })
+      end
+
+      it "child of missing level  inserts placeholders in 'ancestors' for missing levels" do
+        expect(doc_missing_lvl.data['ancestors'].size).to eq(2)
+        expect(doc_missing_lvl.data['ancestors']).to include({ "url" => "", "title" => "blank" })
+      end  
+
     end
-
-    it "third-lvl 'ancestors' and 'children' metadata will be populated" do
-      expect(doc_third_lvl.data['ancestors'].size).to eq(2)
-      expect(doc_third_lvl.data['ancestors']).to include(doc_root)
-      expect(doc_third_lvl.data['ancestors']).to include(doc_second_lvl)
-      expect(doc_third_lvl.data['children'].size).to eq(0)
-    end
-
-  end
-
-  context "when tree.path level does not exist" do
-
-    it "parent of missing level inserts placeholders in 'children' for missing levels" do
-      expect(doc_root.data['children']).to include({ "id" => "", "title" => "blank" })
-    end
-
-    it "child of missing level  inserts placeholders in 'ancestors' for missing levels" do
-      expect(doc_missing_lvl.data['ancestors'].size).to eq(2)
-      expect(doc_missing_lvl.data['ancestors']).to include({ "id" => "", "title" => "blank" })
-    end  
 
   end
 
