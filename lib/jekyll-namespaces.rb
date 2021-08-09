@@ -45,7 +45,7 @@ module Jekyll
 
         # tree
         ## setup
-        root_doc = @md_docs.detect { |doc| doc.data['slug'] == 'root' }
+        root_doc = @md_docs.detect { |doc| doc.basename_without_ext == 'root' }
         root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.data['permalink'], root_doc)
         ## build
         @md_docs.each do |cur_doc|
