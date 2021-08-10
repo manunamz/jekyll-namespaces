@@ -2,6 +2,8 @@
 
 module Jekyll
   module Namespaces
+
     VERSION = "0.0.2"
+    
   end
 end
