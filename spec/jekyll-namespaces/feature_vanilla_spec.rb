@@ -21,7 +21,7 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
   # let(:config_overrides)     { {} }
   let(:config_overrides)     { { "namespaces" => { "include" => ["docs"] } } }
   let(:site)                 { Jekyll::Site.new(config) }
-  
+
   let(:doc_root)             { find_by_title(site.collections["docs"].docs, "Root") }
   let(:doc_second_lvl)       { find_by_title(site.collections["docs"].docs, "Root Second Level") }
   let(:doc_third_lvl)        { find_by_title(site.collections["docs"].docs, "Root Third Level") }
@@ -36,49 +36,63 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
   end
 
   after(:each) do
-    # cleanup generated assets
-    FileUtils.rm_rf(Dir["#{fixtures_dir("/assets/graph-tree.json")}"])
     # cleanup _site/ dir
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end
 
-  context "basic tree.path processing" do
+  context "basic default tree.path processing" do
 
-    context "when tree.path exists" do
+    context "when tree.path level exists" do
 
-      it "root-lvl 'ancestors' and 'children' metadata will be populated" do
-        expect(doc_root.data['ancestors'].size).to eq(0)
-        expect(doc_root.data['children'].size).to eq(2)
-        expect(doc_root.data['children']).to include(doc_second_lvl)
-        expect(doc_root.data['children']).to include({ "url" => "", "title" => "blank" })
+      context "metadata:" do
+
+        it "'children' is an array of doc urls" do
+          expect(doc_second_lvl.data['children']).to be_a(Array)
+          expect(doc_second_lvl.data['children'][0]).to eq("/docs/second-level.third-level/")
+        end
+
+        it "'ancestors' is an array of doc urls" do
+          expect(doc_second_lvl.data['ancestors']).to be_a(Array)
+          expect(doc_second_lvl.data['ancestors'][0]).to eq("/docs/root/")
+        end
+
       end
 
-      it "second-lvl 'ancestors' and 'children' metadata will be populated" do
-        expect(doc_second_lvl.data['ancestors'].size).to eq(1)
-        expect(doc_second_lvl.data['ancestors']).to include(doc_root)
-        expect(doc_second_lvl.data['children'].size).to eq(1)
-        expect(doc_second_lvl.data['children']).to include(doc_third_lvl)
-      end
+      context "level inspection looks like:" do
 
-      it "third-lvl 'ancestors' and 'children' metadata will be populated" do
-        expect(doc_third_lvl.data['ancestors'].size).to eq(2)
-        expect(doc_third_lvl.data['ancestors']).to include(doc_root)
-        expect(doc_third_lvl.data['ancestors']).to include(doc_second_lvl)
-        expect(doc_third_lvl.data['children'].size).to eq(0)
+        it "root-lvl 'ancestors' and 'children' metadata" do
+          expect(doc_root.data['ancestors'].size).to eq(0)
+          expect(doc_root.data['children'].size).to eq(2)
+          expect(doc_root.data['children']).to eq(["root.blank", "/docs/second-level/"])
+        end
+
+        it "second-lvl 'ancestors' and 'children' metadata" do
+          expect(doc_second_lvl.data['ancestors'].size).to eq(1)
+          expect(doc_second_lvl.data['ancestors']).to eq(["/docs/root/"])
+          expect(doc_second_lvl.data['children'].size).to eq(1)
+          expect(doc_second_lvl.data['children']).to eq(["/docs/second-level.third-level/"])
+        end
+
+        it "third-lvl 'ancestors' and 'children' metadata" do
+          expect(doc_third_lvl.data['ancestors'].size).to eq(2)
+          expect(doc_third_lvl.data['ancestors']).to eq(["/docs/root/", "/docs/second-level/"])
+          expect(doc_third_lvl.data['children'].size).to eq(0)
+        end
+
       end
 
     end
 
     context "when tree.path level does not exist" do
 
-      it "parent of missing level inserts placeholders in 'children' for missing levels" do
-        expect(doc_root.data['children']).to include({ "url" => "", "title" => "blank" })
+      it "parent of missing level inserts namespace instead of url in 'children' for missing levels" do
+        expect(doc_root.data['children']).to include("root.blank")
       end
 
-      it "child of missing level  inserts placeholders in 'ancestors' for missing levels" do
+      it "child of missing level inserts namespace instead of url in 'ancestors' for missing levels" do
         expect(doc_missing_lvl.data['ancestors'].size).to eq(2)
-        expect(doc_missing_lvl.data['ancestors']).to include({ "url" => "", "title" => "blank" })
-      end  
+        expect(doc_missing_lvl.data['ancestors']).to include("root.blank")
+      end
 
     end
 

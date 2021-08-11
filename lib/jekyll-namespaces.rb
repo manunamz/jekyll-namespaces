@@ -153,23 +153,17 @@ module Jekyll
           children = []
           node.children.each do |child|
             if !child.doc.is_a?(Jekyll::Document)
-              children << { 
-                'url' => '',
-                'title' => child.namespace.match('([^.]*$)')[0].gsub('-', ' ')
-              }
+              children << ""
             else
-              children << child.doc
+              children << child.doc.url
             end
           end
           return ancestors, children
         else
           if !node.doc.is_a?(Jekyll::Document)
-            ancestors << { 
-              'url' => '',
-              'title' => node.namespace.match('([^.]*$)')[0].gsub('-', ' ')
-            }
+            ancestors << ""
           else
-            ancestors << node.doc
+            ancestors << node.doc.url
           end
           results = []
           node.children.each do |child_node|
