@@ -32,15 +32,15 @@ module Jekyll
 
       def generate(site)
         return if disabled?
-        
+
         # setup site
         @site = site
         @context ||= Context.new(site)
 
         # setup markdown docs
         docs = []
-        docs += site.pages if include?(:pages)
-        docs += site.docs_to_write.filter { |d| include?(d.type) }
+        docs += @site.pages if include?(:pages)
+        docs += @site.docs_to_write.filter { |d| include?(d.type) }
         @md_docs = docs.filter { |doc| markdown_extension?(doc.extname) }
 
         # tree
