@@ -5,9 +5,10 @@ module Jekyll
   module Namespaces
 
     class Tree
+      attr_reader :root
 
       def initialize(root_doc, md_docs)
-        @root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.data['permalink'], root_doc)
+        @root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.url, root_doc)
 
         md_docs.each do |cur_doc|
           if !cur_doc.data['slug'].nil? and cur_doc.data['slug'] != 'root'
@@ -28,7 +29,7 @@ module Jekyll
           cur_nd_namespace = 'root' + '.' + doc.data['slug']
           cur_nd_id = doc.data['id']
           cur_nd_title = doc.data['title']
-          cur_nd_url = doc.data['permalink']
+          cur_nd_url = doc.url
           # create node if one does not exist
           unless node.children.any?{ |c| c.namespace == cur_nd_namespace }
             new_node = Node.new(cur_nd_namespace, cur_nd_id, cur_nd_title, cur_nd_url, doc)
@@ -116,7 +117,7 @@ module Jekyll
       end
 
       def type
-        return doc.type
+        return @doc.type
       end
 
       def to_s
