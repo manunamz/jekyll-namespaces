@@ -39,8 +39,6 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
   end
 
   after(:each) do
-    # cleanup generated assets
-    FileUtils.rm_rf(Dir["#{fixtures_dir("/assets/graph-tree.json")}"])
     # cleanup _site/ dir
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end

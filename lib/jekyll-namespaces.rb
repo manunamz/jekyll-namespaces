@@ -11,19 +11,11 @@ module Jekyll
     class Generator < Jekyll::Generator
       attr_accessor :site, :config
 
-      # Use Jekyll's native relative_url filter
-      include Jekyll::Filters::URLFilters
-
       CONVERTER_CLASS = Jekyll::Converters::Markdown
       # config
       CONFIG_KEY = "namespaces"
       ENABLED_KEY = "enabled"
       INCLUDE_KEY = "include"
-      # graph config
-      GRAPH_DATA_KEY = "d3_graph_data"
-      ENABLED_GRAPH_DATA_KEY = "enabled"
-      EXCLUDE_GRAPH_KEY = "exclude"
-      GRAPH_ASSETS_LOCATION_KEY = "path"
 
       def initialize(config)
         @config ||= config
@@ -54,19 +46,15 @@ module Jekyll
             self.add_path(root, cur_doc)
           end
         end
-        
+
         # print_tree(root)
-        
+
         # generate tree metadata
         @md_docs.each do |cur_doc|
-          if !excluded_in_graph?(cur_doc)
+          if !include?(cur_doc)
             cur_doc.data['namespace'] = cur_doc.basename_without_ext
             cur_doc.data['ancestors'], cur_doc.data['children'] = self.find_doc_immediate_relatives(cur_doc, root)
           end
-        end
-        # graph
-        if !disabled_graph_data?
-          self.write_graph(root)
         end
       end
 
@@ -90,26 +78,7 @@ module Jekyll
       end
 
       def option(key)
-        config[CONFIG_KEY] && config[CONFIG_KEY][key]
-      end
-
-      # graph config helpers
-
-      def disabled_graph_data?
-        option_graph(ENABLED_GRAPH_DATA_KEY) == false
-      end
-
-      def excluded_in_graph?(type)
-        return false unless option_graph(EXCLUDE_GRAPH_KEY)
-        return option_graph(EXCLUDE_GRAPH_KEY).include?(type.to_s)
-      end
-
-      def has_custom_assets_path?
-        return !!option_graph(GRAPH_ASSETS_LOCATION_KEY)
-      end
-
-      def option_graph(key)
-        config[GRAPH_DATA_KEY] && config[GRAPH_DATA_KEY][key]
+        @config[CONFIG_KEY] && @config[CONFIG_KEY][key]
       end
 
       # helpers
@@ -153,7 +122,7 @@ module Jekyll
           children = []
           node.children.each do |child|
             if !child.doc.is_a?(Jekyll::Document)
-              children << ""
+              children << child.namespace
             else
               children << child.doc.url
             end
@@ -161,7 +130,7 @@ module Jekyll
           return ancestors, children
         else
           if !node.doc.is_a?(Jekyll::Document)
-            ancestors << ""
+            ancestors << node.namespace
           else
             ancestors << node.doc.url
           end
@@ -181,52 +150,6 @@ module Jekyll
         ancestors.append(node.id)
         node.children.each do |child_node|
           self.print_tree(child_node, ancestors.clone)
-        end
-      end
-
-      # graph helpers
-
-      # convert tree (node-class) to json
-      def tree_to_json(baseurl, node, json_node={})
-        if !node.doc.is_a?(Jekyll::Document)
-          Jekyll.logger.warn "Tree node missing: ", node.namespace
-          label = node.namespace.match('([^.]*$)')[0].gsub('-', ' ')
-          node_url = ''
-        else
-          label = node.title
-          node_url = relative_url(node.doc.url)
-        end
-        json_children = []
-        node.children.each do |child|
-          new_child = self.tree_to_json(baseurl, child)
-          json_children.append(new_child)
-        end
-        json_node = {
-          # "id": node.id,
-          "id": node_url,
-          "namespace": node.namespace,
-          "label": label,
-          "children": json_children,
-          "url": node_url,
-        }
-        return json_node
-      end
-
-      def write_graph(root)
-        assets_path = has_custom_assets_path? ? option_graph(GRAPH_ASSETS_LOCATION_KEY) : "/assets"
-        if !File.directory?(File.join(site.source, assets_path))
-          Jekyll.logger.error "Assets location does not exist, please create required directories for path: ", assets_path
-        end
-        # from: https://github.com/jekyll/jekyll/issues/7195#issuecomment-415696200
-        static_file = Jekyll::StaticFile.new(site, site.source, assets_path, "graph-tree.json")
-        json_formatted_tree = self.tree_to_json(@site.baseurl, root)
-        File.write(@site.source + static_file.relative_path, JSON.dump(
-          json_formatted_tree
-        ))
-        # tests fail without manually adding the static file, but actual site builds seem to do ok
-        # ...although there does seem to be a race condition which causes a rebuild to be necessary in order to detect the graph data file
-        if @testing
-          @site.static_files << static_file if !@site.static_files.include?(static_file)
         end
       end
     end
