@@ -58,22 +58,22 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
 
       end
 
-      context "level inspection looks like:" do
+      context "what each level looks like at:" do
 
-        it "root-lvl 'ancestors' and 'children' metadata" do
+        it "root-lvl ('ancestors': 0; 'children': 2; w/ urls)" do
           expect(doc_root.data['ancestors'].size).to eq(0)
           expect(doc_root.data['children'].size).to eq(2)
           expect(doc_root.data['children']).to eq(["root.blank", "/docs/second-level/"])
         end
 
-        it "second-lvl 'ancestors' and 'children' metadata" do
+        it "second-lvl ('ancestors': 1; 'children': 1; w/ urls)" do
           expect(doc_second_lvl.data['ancestors'].size).to eq(1)
           expect(doc_second_lvl.data['ancestors']).to eq(["/docs/root/"])
           expect(doc_second_lvl.data['children'].size).to eq(1)
           expect(doc_second_lvl.data['children']).to eq(["/docs/second-level.third-level/"])
         end
 
-        it "third-lvl 'ancestors' and 'children' metadata" do
+        it "third-lvl ('ancestors': 2; 'children': 0; w/ urls)" do
           expect(doc_third_lvl.data['ancestors'].size).to eq(2)
           expect(doc_third_lvl.data['ancestors']).to eq(["/docs/root/", "/docs/second-level/"])
           expect(doc_third_lvl.data['children'].size).to eq(0)
