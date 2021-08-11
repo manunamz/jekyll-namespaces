@@ -2,7 +2,7 @@
 
 # helper class for tree-building.
 class Node
-  attr_accessor :id, :namespace, :title, :children, :url, :doc
+  attr_accessor :namespace, :id, :title, :children, :url, :doc
 
   def initialize(namespace, id="", title="", url="", doc="")
     # mandatory
