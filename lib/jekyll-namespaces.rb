@@ -10,7 +10,8 @@ module Jekyll
   module Namespaces
 
     class Generator < Jekyll::Generator
-      attr_accessor :site, :config
+      # for testing
+      attr_reader :config
 
       CONVERTER_CLASS = Jekyll::Converters::Markdown
       # config

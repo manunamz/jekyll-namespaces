@@ -1,6 +1,6 @@
 # Jekyll-Namespaces
 
-⚠️ This is gem is under active development! ⚠️ 
+⚠️ This is gem is under active development! ⚠️
 
 ⚠️ Expect breaking changes and surprises until otherwise noted (likely by v0.1.0 or v1.0.0). ⚠️
 
@@ -13,20 +13,17 @@ Defaults look like this:
 
 ```
 namespaces:
-  enable: true
-  include: []
-d3_graph_data:
   enabled: true
-  exclude: []
-  path: "/assets"
+  include: []
 ```
 
-The `enable` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `include`s for namespaces or `exclude`s for graph generation.
+The `enabled` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `include`s for namespaces or `exclude`s for graph generation.
 
 The gem will only scan the jekyll types listed under the `include` config:
 
 ```
 namespaces:
+  enable: true
   include:
     - "docs"
 ```
