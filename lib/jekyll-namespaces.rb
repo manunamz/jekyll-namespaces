@@ -2,6 +2,7 @@
 require "jekyll"
 
 require_relative "jekyll-namespaces/context"
+require_relative "jekyll-namespaces/site"
 require_relative "jekyll-namespaces/tree"
 require_relative "jekyll-namespaces/version"
 
@@ -37,15 +38,17 @@ module Jekyll
 
         # tree setup
         root_doc = @md_docs.detect { |doc| doc.basename_without_ext == 'root' }
-        @tree = Tree.new(root_doc, @md_docs)
+        @site.tree = Tree.new(root_doc, @md_docs)
 
         # generate metadata
         @md_docs.each do |cur_doc|
           if !include?(cur_doc)
             cur_doc.data['namespace'] = cur_doc.basename_without_ext
-            cur_doc.data['ancestors'], cur_doc.data['children'] = @tree.find_doc_immediate_relatives(cur_doc)
+            cur_doc.data['ancestors'], cur_doc.data['children'] = @site.tree.find_doc_immediate_relatives(cur_doc)
           end
         end
+
+
       end
 
       # config helpers
