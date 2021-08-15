@@ -21,7 +21,6 @@ module Jekyll
 
       def initialize(config)
         @config ||= config
-        @testing ||= config['testing'] if config.keys.include?('testing')
       end
 
       def generate(site)
