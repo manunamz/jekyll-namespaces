@@ -35,6 +35,7 @@ module Jekyll
         docs += @site.pages if include?(:pages)
         docs += @site.docs_to_write.filter { |d| include?(d.type) }
         @md_docs = docs.filter { |doc| markdown_extension?(doc.extname) }
+        return if @md_docs.empty?
 
         # tree setup
         root_doc = @md_docs.detect { |doc| doc.basename_without_ext == 'root' }
