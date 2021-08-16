@@ -25,6 +25,7 @@ module Jekyll
 
       def generate(site)
         return if disabled?
+        self.old_config_warn()
 
         # setup site
         @site = site
@@ -49,7 +50,6 @@ module Jekyll
           end
         end
 
-
       end
 
       # config helpers
@@ -73,6 +73,14 @@ module Jekyll
 
       def option(key)
         @config[CONFIG_KEY] && @config[CONFIG_KEY][key]
+      end
+
+      # !! deprecated !!
+
+      def old_config_warn()
+        if @config.include?("d3_graph_data")
+          Jekyll.logger.warn "As of 0.0.2, 'd3_graph_data' should now be 'd3' and requires the 'jekyll-d3' plugin."
+        end
       end
     end
 
