@@ -36,10 +36,15 @@ module Jekyll
         docs += @site.pages if !excluded?(:pages)
         docs += @site.docs_to_write.filter { |d| !excluded?(d.type) }
         @md_docs = docs.filter { |doc| markdown_extension?(doc.extname) }
-        return if @md_docs.empty?
+        if @md_docs.empty?
+          Jekyll.logger.debug("No documents to process.")
+        end
 
         # tree setup
-        root_doc = @md_docs.detect { |doc| doc.data['slug'] == 'root' }
+        root_doc = @md_docs.detect { |d| d.data['slug'] == 'root' }
+        if root_doc.nil?
+          Jekyll.logger.debug("No root.md detected.")
+        end
         @site.tree = Tree.new(root_doc, @md_docs)
 
         # generate metadata
