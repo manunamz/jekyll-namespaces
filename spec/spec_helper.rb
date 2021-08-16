@@ -2,7 +2,7 @@
 
 require "jekyll-namespaces"
 
-# Jekyll.logger.log_level = :error
+Jekyll.logger.log_level = :error
 
 RSpec.configure do |config|
   FIXTURES_DIR = File.expand_path("fixtures", __dir__)
@@ -59,7 +59,7 @@ RSpec.configure do |config|
   # get run.
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
-  
+
   # Limits the available syntax to the non-monkey patched syntax that is recommended.
   # For more details, see:
   #   - http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax
