@@ -27,7 +27,7 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
     )
   end
   # let(:config_overrides)     { {} }
-  let(:config_overrides)     { { "namespaces" => { "include" => ["docs"] } } }
+  let(:config_overrides)     { { "namespaces" => { "exclude" => [ "pages", "posts" ] } } }
   let(:site)                 { Jekyll::Site.new(config) }
 
   # makes markdown tests work
