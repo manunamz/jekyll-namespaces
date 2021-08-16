@@ -23,14 +23,14 @@ The gem will only scan the jekyll types listed under the `include` config:
 
 ```
 namespaces:
-  enable: true
+  enabled: true
   include:
     - "docs"
 ```
 
 ## Usage
 
-Namespaces are dilineated by dots, `like.this.md`.
+Namespaces are delineated by dots, `like.this.md`. There must be a root document named `root.md`.
 
 Missing levels will not break the build. They will be processed and marked as missing.
 
