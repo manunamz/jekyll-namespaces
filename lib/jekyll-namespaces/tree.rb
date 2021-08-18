@@ -22,9 +22,9 @@ module Jekyll
     def add_path(doc, node=nil, depth=1)
       node = @root if depth == 1
       Jekyll.logger.error("Incorrect node in tree.add_path") if node == nil
-      chunked_namespace = doc.data['slug'].split(/\s|\./)
+      levels = doc.data['slug'].split(/\s|\./)
       # handle doc if the given node was not root and we are at depth
-      if depth == chunked_namespace.length
+      if depth == levels.length
         cur_nd_namespace = 'root' + '.' + doc.data['slug']
         cur_nd_id = doc.data['id']
         cur_nd_title = doc.data['title']
@@ -41,7 +41,7 @@ module Jekyll
         return
       # create temp node and recurse
       else
-        cur_namespace = 'root' + '.' + chunked_namespace[0..(depth - 1)].join('.')
+        cur_namespace = 'root' + '.' + levels[0..(depth - 1)].join('.')
         unless node.children.any?{ |c| c.namespace == cur_namespace }
           new_node = Node.new(cur_namespace)
           node.children << new_node
