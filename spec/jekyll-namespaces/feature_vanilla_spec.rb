@@ -81,8 +81,8 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
 
         it "root-lvl ('ancestors': 0; 'children': 2; w/ urls)" do
           expect(doc_root.data['ancestors'].size).to eq(0)
-          expect(doc_root.data['children'].size).to eq(3)
-          expect(doc_root.data['children']).to eq(["/2020/12/08/one-post/", "root.blank", "/docs/second-level/"])
+          expect(doc_root.data['children'].size).to eq(4)
+          expect(doc_root.data['children']).to eq(["/one-page/", "/2020/12/08/one-post/", "root.blank", "/docs/second-level/"])
         end
 
         it "second-lvl ('ancestors': 1; 'children': 1; w/ urls)" do

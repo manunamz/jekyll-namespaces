@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require "jekyll"
 
 module Jekyll
 
@@ -10,7 +10,12 @@ module Jekyll
       @root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.url, root_doc)
 
       md_docs.each do |cur_doc|
-        if !cur_doc.data['slug'].nil? and cur_doc.data['slug'] != 'root'
+        if cur_doc != @root.doc
+          # jekyll pages don't have the slug attribute: https://github.com/jekyll/jekyll/blob/master/lib/jekyll/page.rb#L8
+          if cur_doc.type == :pages
+            page_basename = File.basename(cur_doc.name, File.extname(cur_doc.name))
+            cur_doc.data['slug'] = Jekyll::Utils.slugify(page_basename)
+          end
           self.add_path(cur_doc)
         end
       end
@@ -60,7 +65,8 @@ module Jekyll
       if target_doc == node.doc
         children = []
         node.children.each do |child|
-          if !child.doc.is_a?(Jekyll::Document)
+          # if the child document is an empty string, it is a missing node
+          if !child.doc.is_a?(Jekyll::Document) && !child.doc.is_a?(Jekyll::Page)
             children << child.namespace
           else
             children << child.doc.url
@@ -68,7 +74,8 @@ module Jekyll
         end
         return ancestors, children
       else
-        if !node.doc.is_a?(Jekyll::Document)
+        # if the node document is an empty string, it is a missing node
+        if !node.doc.is_a?(Jekyll::Document) && !node.doc.is_a?(Jekyll::Page)
           ancestors << node.namespace
         else
           ancestors << node.doc.url
