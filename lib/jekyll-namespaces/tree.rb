@@ -34,13 +34,14 @@ module Jekyll
         cur_nd_id = doc.data['id']
         cur_nd_title = doc.data['title']
         cur_nd_url = doc.url
+        
+        cur_node = node.children.detect {|c| c.namespace == cur_nd_namespace }
         # create node if one does not exist
-        unless node.children.any?{ |c| c.namespace == cur_nd_namespace }
+        if cur_node.nil?
           new_node = Node.new(cur_nd_namespace, cur_nd_id, cur_nd_title, cur_nd_url, doc)
           node.children << new_node
         # fill-in node if one already exists
         else
-          cur_node = node.children.detect {|c| c.namespace == cur_nd_namespace }
           cur_node.fill(cur_nd_id, cur_nd_title, cur_nd_url, doc)
         end
         return
