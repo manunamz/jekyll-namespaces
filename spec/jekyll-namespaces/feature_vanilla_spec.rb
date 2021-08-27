@@ -39,6 +39,26 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end
 
+  context "processes markdown" do
+
+    context "detecting markdown" do
+      before { subject.instance_variable_set "@site", site }
+
+      it "knows when an extension is markdown" do
+        expect(subject.send(:markdown_extension?, ".md")).to eql(true)
+      end
+
+      it "knows when an extension isn't markdown" do
+        expect(subject.send(:markdown_extension?, ".html")).to eql(false)
+      end
+
+      it "knows the markdown converter" do
+        expect(subject.send(:markdown_converter)).to be_a(Jekyll::Converters::Markdown)
+      end
+    end
+
+  end
+
   context "basic default tree.path processing" do
 
     context "when tree.path level exists" do

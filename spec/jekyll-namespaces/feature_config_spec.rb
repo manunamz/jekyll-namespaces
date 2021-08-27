@@ -26,9 +26,10 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
       )
     )
   end
-  # let(:config_overrides)     { {} }
-  let(:config_overrides)     { { "namespaces" => { "exclude" => [ "pages", "posts" ] } } }
+  let(:config_overrides)     { {} }
+  # let(:config_overrides)     { { "namespaces" => { "exclude" => [ "pages", "posts" ] } } }
   let(:site)                 { Jekyll::Site.new(config) }
+  let(:doc_root)             { find_by_title(site.collections["docs"].docs, "Root") }
 
   # makes markdown tests work
   subject                    { described_class.new(site.config) }
@@ -43,26 +44,29 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end
 
-  it "saves the config" do
-    expect(subject.config).to eql(site.config)
-  end
+  context "configs options" do
 
-  context "processes markdown" do
+    it "are saved" do
+      expect(subject.config).to eql(site.config)
+    end
 
-    context "detecting markdown" do
-      before { subject.instance_variable_set "@site", site }
+    context "'disable' turns off the plugin" do
+      let(:config_overrides) { { "namespaces" => { "enabled" => false } } }
 
-      it "knows when an extension is markdown" do
-        expect(subject.send(:markdown_extension?, ".md")).to eql(true)
+      it "does not process name.spaces" do
+        expect(site.tree).to be_nil
       end
 
-      it "knows when an extension isn't markdown" do
-        expect(subject.send(:markdown_extension?, ".html")).to eql(false)
+    end
+
+    context "'exclude' does not process jekyll types that are listed" do
+      let(:config_overrides) { { "namespaces" => { "exclude" => [ "pages", "posts" ] } } }
+
+      it "does not process name.spaces for those types" do
+        expect(doc_root['children']).to_not include("/one-page/")
+        expect(doc_root['children']).to_not include("/2020/12/08/one-post/")
       end
 
-      it "knows the markdown converter" do
-        expect(subject.send(:markdown_converter)).to be_a(Jekyll::Converters::Markdown)
-      end
     end
 
   end
