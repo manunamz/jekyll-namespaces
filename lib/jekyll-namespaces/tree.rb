@@ -9,14 +9,14 @@ module Jekyll
     def initialize(root_doc, md_docs)
       @root = Node.new('root', root_doc.data['id'], root_doc.data['title'], root_doc.url, root_doc)
 
-      md_docs.each do |cur_doc|
-        if cur_doc != @root.doc
+      md_docs.each do |doc|
+        if doc != @root.doc
           # jekyll pages don't have the slug attribute: https://github.com/jekyll/jekyll/blob/master/lib/jekyll/page.rb#L8
-          if cur_doc.type == :pages
-            page_basename = File.basename(cur_doc.name, File.extname(cur_doc.name))
-            cur_doc.data['slug'] = Jekyll::Utils.slugify(page_basename)
+          if doc.type == :pages
+            page_basename = File.basename(doc.name, File.extname(doc.name))
+            doc.data['slug'] = Jekyll::Utils.slugify(page_basename)
           end
-          self.add_path(cur_doc)
+          self.add_path(doc)
         end
       end
 
@@ -34,7 +34,7 @@ module Jekyll
         cur_nd_id = doc.data['id']
         cur_nd_title = doc.data['title']
         cur_nd_url = doc.url
-        
+
         cur_node = node.children.detect {|c| c.namespace == cur_nd_namespace }
         # create node if one does not exist
         if cur_node.nil?

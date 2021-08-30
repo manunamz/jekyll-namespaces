@@ -48,9 +48,9 @@ module Jekyll
         @site.tree = Tree.new(root_doc, @md_docs)
 
         # generate metadata
-        @md_docs.each do |cur_doc|
-          cur_doc.data['namespace'] = cur_doc.data['slug']
-          cur_doc.data['ancestors'], cur_doc.data['children'] = @site.tree.find_doc_immediate_relatives(cur_doc)
+        @md_docs.each do |doc|
+          doc.data['namespace'] = doc.data['slug']
+          doc.data['ancestors'], doc.data['children'] = @site.tree.find_doc_immediate_relatives(doc)
         end
 
       end
