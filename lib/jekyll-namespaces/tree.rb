@@ -58,6 +58,35 @@ module Jekyll
       self.add_path(doc, new_node, depth + 1)
     end
 
+    def get_all_relative_ids(target_node_id, node=@root, ancestors=[], descendents=[], found=false)
+      # found target node, stop adding ancestors and build descendents
+      if target_node_id == node.url || target_node_id == node.namespace || found
+        node.children.each do |child_node|
+          # if the child document is an empty string, it is a missing node
+          if !child_node.doc.is_a?(Jekyll::Document) && !child_node.doc.is_a?(Jekyll::Page)
+            descendents << child_node.namespace
+          else
+            descendents << child_node.doc.url
+          end
+          self.get_all_relative_ids(target_node_id, child_node, ancestors.clone, descendents, found=true)
+        end
+        return ancestors, descendents
+      # target node not yet found, build ancestors
+      else
+        # if the node document is an empty string, it is a missing node
+        if !node.doc.is_a?(Jekyll::Document) && !node.doc.is_a?(Jekyll::Page)
+          ancestors << node.namespace
+        else
+          ancestors << node.doc.url
+        end
+        results = []
+        node.children.each do |child_node|
+          results.concat(self.get_all_relative_ids(target_node_id, child_node, ancestors.clone))
+        end
+        return results.select { |r| !r.nil? }
+      end
+    end
+
     # find the parent and children of the 'target_doc'.
     # ('node' as in the current node, which first is root.)
     def find_doc_immediate_relatives(target_doc, node=nil, ancestors=[])
