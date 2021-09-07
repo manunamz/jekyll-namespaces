@@ -48,11 +48,11 @@ module Jekyll
       # create temp node and recurse
       else
         cur_namespace = 'root' + '.' + levels[0..(depth - 1)].join('.')
-        unless node.children.any?{ |c| c.namespace == cur_namespace }
+        unless node.children.any? { |c| c.namespace == cur_namespace }
           new_node = Node.new(cur_namespace)
           node.children << new_node
         else
-          new_node = node.children.detect {|c| c.namespace == cur_namespace }
+          new_node = node.children.detect { |c| c.namespace == cur_namespace }
         end
       end
       self.add_path(doc, new_node, depth + 1)
@@ -83,7 +83,7 @@ module Jekyll
         end
         results = []
         node.children.each do |child_node|
-          results.concat self.find_doc_immediate_relatives(target_doc, child_node, ancestors.clone)
+          results.concat(self.find_doc_immediate_relatives(target_doc, child_node, ancestors.clone))
         end
         return results.select { |r| !r.nil? }
       end
