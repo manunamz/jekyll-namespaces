@@ -63,7 +63,7 @@ module Jekyll
       if target_node_id == node.url || target_node_id == node.namespace || found
         node.children.each do |child_node|
           # if the child document is an empty string, it is a missing node
-          if !child_node.doc.is_a?(Jekyll::Document) && !child_node.doc.is_a?(Jekyll::Page)
+          if child_node.missing
             descendents << child_node.namespace
           else
             descendents << child_node.doc.url
@@ -74,7 +74,7 @@ module Jekyll
       # target node not yet found, build ancestors
       else
         # if the node document is an empty string, it is a missing node
-        if !node.doc.is_a?(Jekyll::Document) && !node.doc.is_a?(Jekyll::Page)
+        if node.missing
           ancestors << node.namespace
         else
           ancestors << node.doc.url
@@ -96,7 +96,7 @@ module Jekyll
         children = []
         node.children.each do |child|
           # if the child document is an empty string, it is a missing node
-          if !child.doc.is_a?(Jekyll::Document) && !child.doc.is_a?(Jekyll::Page)
+          if child.missing
             children << child.namespace
           else
             children << child.doc.url
@@ -105,7 +105,7 @@ module Jekyll
         return ancestors, children
       else
         # if the node document is an empty string, it is a missing node
-        if !node.doc.is_a?(Jekyll::Document) && !node.doc.is_a?(Jekyll::Page)
+        if node.missing
           ancestors << node.namespace
         else
           ancestors << node.doc.url
@@ -150,6 +150,10 @@ module Jekyll
       @title = title
       @url = url
       @doc = doc
+    end
+
+    def missing
+      return @doc == ""
     end
 
     def type
