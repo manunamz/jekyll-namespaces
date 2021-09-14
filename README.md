@@ -4,42 +4,53 @@
 
 ⚠️ Expect breaking changes and surprises until otherwise noted (likely by v0.1.0 or v1.0.0). ⚠️
 
+Jekyll-Namespaces provides support for long namespacing of markdown filenames with dot `.` delimiters. Frontmatter metadata is added to each document so that they may be referenced by the relationships that make up the overarching hierarchy built from the namespaces. (For example, on a page it may be desirable to link to all `children` of the current page or to build a breadcrumb trail from the current page's ancestry.)
+
+This gem is part of the [jekyll-bonsai](https://manunamz.github.io/jekyll-bonsai/) project. 🎋
+
 ## Installation
 
-1. Add `gem 'jekyll-namespaces'` to your site's Gemfile and run `bundle`.
-2. You may edit `_config.yml` to toggle the plugin and graph generation on/off or exclude certain jekyll types. (jekyll types: `pages`, `posts`, and `collections`. [Here](https://ben.balter.com/2015/02/20/jekyll-collections/) is a blog post about them.)
+Follow the instructions for installing a [jekyll plugin](https://jekyllrb.com/docs/plugins/installation/) for `jekyll-namespaces`.
+
+## Configuration
 
 Defaults look like this:
 
 ```
 namespaces:
   enabled: true
-  include: []
+  exclude: []
 ```
 
-The `enabled` flags may be toggled to turn off the plugin or turn off `d3_graph_data` generation. Any jekyll type ("pages", "posts", or collection names such as "docs" or "notes") may be added to a list of `include`s for namespaces or `exclude`s for graph generation.
-
-The gem will only scan the jekyll types listed under the `include` config:
-
-```
-namespaces:
-  enabled: true
-  include:
-    - "docs"
-```
+`enabled`: Toggles the plugin on or off.
+`exclude`: A list of any jekyll document type (`pages`, `posts`, and `collections`. [Here](https://ben.balter.com/2015/02/20/jekyll-collections/) is a post on them) to exclude from the namespace tree.
 
 ## Usage
 
-Namespaces are delineated by dots, `like.this.md`. There must be a root document named `root.md`.
+Namespaces are delineated by dots, `like.this.md`. There must also be a root document named `root.md`.
 
-Missing levels will not break the build. They will be processed and marked as missing.
+Missing levels will not break the build. They will be processed and marked as missing by replacing urls with the namespaced filename.
 
-## Development
+### Metadata
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+`ancestors`: Contains a list of url strings for documents along the path from the root document to the current document in the tree.
+`children`: Contains a list of url strings of all immediate children of the current document.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+The document for the url can be retrieved in liquid templates like so:
 
-## Contributing
+```html
+<!-- print all ancestors as links with the document title as its innertext -->
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/manunamz/jekyll-namespaces.
+{% for ancestor_url in page.ancestors %}
+    {% assign ancestor_doc = site.documents | where: "url", ancestor_url | first %}
+    <a href="{{ ancestor_doc.url }}">{{ ancestor_doc.title }}</a>
+{% endfor %}
+```
+```html
+<!-- print all children as links with the document title as its innertext -->
+
+{% for child_url in page.children %}
+    {% assign child_doc = site.documents | where: "url", child_url | first %}
+    <a href="{{ child_doc.url }}">{{ child_doc.title }}</a>
+{% endfor %}
+```
