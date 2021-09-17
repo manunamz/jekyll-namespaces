@@ -6,6 +6,8 @@
 
 Jekyll-Namespaces provides support for long namespacing of markdown filenames with dot `.` delimiters. Frontmatter metadata is added to each document so that they may be referenced by the relationships that make up the overarching hierarchy built from the namespaces. (For example, on a page it may be desirable to link to all `children` of the current page or to build a breadcrumb trail from the current page's ancestry.)
 
+This gem works in conjunction with [`jekyll-graph`](https://github.com/manunamz/jekyll-graph).
+
 This gem is part of the [jekyll-bonsai](https://manunamz.github.io/jekyll-bonsai/) project. 🎋
 
 ## Installation
