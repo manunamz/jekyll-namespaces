@@ -25,6 +25,7 @@ namespaces:
 ```
 
 `enabled`: Toggles the plugin on or off.
+
 `exclude`: A list of any jekyll document type (`pages`, `posts`, and `collections`. [Here](https://ben.balter.com/2015/02/20/jekyll-collections/) is a post on them) to exclude from the namespace tree.
 
 ## Usage
