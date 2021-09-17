@@ -37,6 +37,7 @@ Missing levels will not break the build. They will be processed and marked as mi
 ### Metadata
 
 `ancestors`: Contains a list of url strings for documents along the path from the root document to the current document in the tree.
+
 `children`: Contains a list of url strings of all immediate children of the current document.
 
 The document for the url can be retrieved in liquid templates like so:
