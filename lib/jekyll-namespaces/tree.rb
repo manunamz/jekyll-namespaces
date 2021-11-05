@@ -87,6 +87,20 @@ module Jekyll
       end
     end
 
+
+    def get_sibling_ids(target_node_id, node=@root, parent=nil)
+      return [] if target_node_id === @root.url
+      # found target node
+      if target_node_id == node.url || target_node_id == node.namespace
+        return parent.children.select { |c| c.id }
+      # target node not yet found
+      else
+        node.children.each do |child_node|
+          self.get_sibling_ids(target_node_id, child_node, node)
+        end
+      end
+    end
+
     # find the parent and children of the 'target_doc'.
     # ('node' as in the current node, which first is root.)
     def find_doc_immediate_relatives(target_doc, node=nil, ancestors=[])
