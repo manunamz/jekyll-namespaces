@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 require "jekyll"
 
-require_relative "jekyll-namespaces/context"
-require_relative "jekyll-namespaces/site"
+require_relative "jekyll-namespaces/patch/context"
+require_relative "jekyll-namespaces/patch/site"
 require_relative "jekyll-namespaces/tree"
 require_relative "jekyll-namespaces/version"
 
