@@ -26,7 +26,7 @@ module Jekyll
     # add unique path for the given doc to tree (node-class).
     def add_path(doc, node=nil, depth=1)
       node = @root if depth == 1
-      Jekyll.logger.error("Incorrect node in tree.add_path") if node == nil
+      Jekyll.logger.error("Jekyll-Namespaces: Incorrect node in tree.add_path") if node == nil
       levels = doc.data['slug'].split(/\s|\./)
       # handle doc if the given node was not root and we are at depth
       if depth == levels.length
@@ -105,7 +105,7 @@ module Jekyll
     # ('node' as in the current node, which first is root.)
     def find_doc_immediate_relatives(target_doc, node=nil, ancestors=[])
       node = @root if ancestors == []
-      Jekyll.logger.error("Incorrect node in tree.find_doc_immediate_relatives") if node == nil
+      Jekyll.logger.error("Jekyll-Namespaces: Incorrect node in tree.find_doc_immediate_relatives") if node == nil
       if target_doc == node.doc
         children = []
         node.children.each do |child|
@@ -134,9 +134,8 @@ module Jekyll
 
     # ...for debugging
     def print_tree(node, ancestors=[])
-      Jekyll.logger.warn "Ancestors: ", ancestors.length
-      Jekyll.logger.warn node
-      Jekyll.logger.warn "Children: ", node.children
+      Jekyll.logger.warn("Jekyll-Namespaces: ")
+      Jekyll.logger.warn("Ancestors: #{ancestors.length}; #{node}; Children: #{node.children}")
       ancestors.append(node.id)
       node.children.each do |child_node|
         self.print_tree(child_node, ancestors.clone)
