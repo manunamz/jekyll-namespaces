@@ -44,7 +44,7 @@ RSpec.describe(Jekyll::Namespaces::Generator) do
     FileUtils.rm_rf(Dir["#{site_dir()}"])
   end
 
-  context "configs options" do
+  context "CONFIG options" do
 
     it "are saved" do
       expect(subject.config).to eql(site.config)
