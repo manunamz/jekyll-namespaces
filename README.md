@@ -38,6 +38,8 @@ Missing levels will not break the build. They will be processed and marked as mi
 
 `children`: Contains a list of url strings of all immediate children of the current document.
 
+`siblings`: Contains a list of url strings of all nodes that share the same direct parent as the current node.
+
 The document for the url can be retrieved in liquid templates like so:
 
 ```html
