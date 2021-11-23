@@ -1,3 +1,9 @@
+## [0.0.3] - 2021-11-23
+### Added
+- `get_sibling_ids()`.
+### Changed
+- `relatives` -> `lineage` in tree methods.
+
 ## [0.0.2] - 2021-09-17
 ### Changed
 - `ancestors` and `children` frontmatter variables contain url strings instead of jekyll documents.
