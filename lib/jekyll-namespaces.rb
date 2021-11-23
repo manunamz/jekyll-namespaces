@@ -50,7 +50,7 @@ module Jekyll
         # generate metadata
         @md_docs.each do |doc|
           doc.data['namespace'] = doc.data['slug']
-          doc.data['ancestors'], doc.data['children'] = @site.tree.find_doc_immediate_relatives(doc)
+          doc.data['ancestors'], doc.data['children'] = @site.tree.find_doc_ancestors_and_children_metadata(doc)
         end
 
       end
@@ -86,7 +86,7 @@ module Jekyll
 
       def old_config_warn()
         if @config.include?("d3_graph_data")
-          Jekyll.logger.warn("Jekyll-Namespaces: As of 0.0.2, 'd3_graph_data' should now be 'd3' and requires the 'jekyll-d3' plugin.")
+          Jekyll.logger.warn("Jekyll-Namespaces: As of 0.0.2, 'd3_graph_data' should now be 'd3' and requires the 'jekyll-graph' plugin.")
         end
         if option_exist?("include")
           Jekyll.logger.warn("Jekyll-Namespaces: As of 0.0.2, all markdown files are processed by default. Use 'exclude' config to exclude document types.")

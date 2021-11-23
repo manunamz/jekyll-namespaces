@@ -58,7 +58,7 @@ module Jekyll
       self.add_path(doc, new_node, depth + 1)
     end
 
-    def get_all_relative_ids(target_node_id, node=@root, ancestors=[], descendents=[], found=false)
+    def get_all_lineage_ids(target_node_id, node=@root, ancestors=[], descendents=[], found=false)
       # found target node, stop adding ancestors and build descendents
       if target_node_id == node.url || target_node_id == node.namespace || found
         node.children.each do |child_node|
@@ -68,7 +68,7 @@ module Jekyll
           else
             descendents << child_node.doc.url
           end
-          self.get_all_relative_ids(target_node_id, child_node, ancestors.clone, descendents, found=true)
+          self.get_all_lineage_ids(target_node_id, child_node, ancestors.clone, descendents, found=true)
         end
         return ancestors, descendents
       # target node not yet found, build ancestors
@@ -81,7 +81,7 @@ module Jekyll
         end
         results = []
         node.children.each do |child_node|
-          results.concat(self.get_all_relative_ids(target_node_id, child_node, ancestors.clone))
+          results.concat(self.get_all_lineage_ids(target_node_id, child_node, ancestors.clone))
         end
         return results.select { |r| !r.nil? }
       end
@@ -103,9 +103,9 @@ module Jekyll
 
     # find the parent and children of the 'target_doc'.
     # ('node' as in the current node, which first is root.)
-    def find_doc_immediate_relatives(target_doc, node=nil, ancestors=[])
+    def find_doc_ancestors_and_children_metadata(target_doc, node=nil, ancestors=[])
       node = @root if ancestors == []
-      Jekyll.logger.error("Jekyll-Namespaces: Incorrect node in tree.find_doc_immediate_relatives") if node == nil
+      Jekyll.logger.error("Jekyll-Namespaces: Incorrect node in tree.find_doc_immediate_lineages") if node == nil
       if target_doc == node.doc
         children = []
         node.children.each do |child|
@@ -126,7 +126,7 @@ module Jekyll
         end
         results = []
         node.children.each do |child_node|
-          results.concat(self.find_doc_immediate_relatives(target_doc, child_node, ancestors.clone))
+          results.concat(self.find_doc_ancestors_and_children_metadata(target_doc, child_node, ancestors.clone))
         end
         return results.select { |r| !r.nil? }
       end
