@@ -16,13 +16,14 @@ Follow the instructions for installing a [jekyll plugin](https://jekyllrb.com/do
 
 Defaults look like this:
 
-```
+```yaml
 namespaces:
   enabled: true
   exclude: []
 ```
 
 `enabled`: Toggles the plugin on or off.
+
 `exclude`: A list of any jekyll document type (`pages`, `posts`, and `collections`. [Here](https://ben.balter.com/2015/02/20/jekyll-collections/) is a post on them) to exclude from the namespace tree.
 
 ## Usage
@@ -34,6 +35,7 @@ Missing levels will not break the build. They will be processed and marked as mi
 ### Metadata
 
 `ancestors`: Contains a list of url strings for documents along the path from the root document to the current document in the tree.
+
 `children`: Contains a list of url strings of all immediate children of the current document.
 
 The document for the url can be retrieved in liquid templates like so:
