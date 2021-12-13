@@ -8,7 +8,7 @@ Jekyll-Namespaces provides support for long namespacing of markdown filenames wi
 
 This gem works in conjunction with [`jekyll-graph`](https://github.com/manunamz/jekyll-graph).
 
-This gem is part of the [jekyll-bonsai](https://manunamz.github.io/jekyll-bonsai/) project. 🎋
+This gem is part of the [jekyll-bonsai](https://jekyll-bonsai.netlify.app/) project. 🎋
 
 ## Installation
 
